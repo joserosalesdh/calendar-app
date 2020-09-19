@@ -10,6 +10,8 @@ import CalendarEvent from './CalendarEvent';
 import CalendarModal from './CalendarModal';
 import { useDispatch } from 'react-redux';
 import { uiOpenModal } from '../../actions/ui';
+import { eventSetActive } from '../../actions/events';
+import AddNewFab from '../ui/AddNewFab';
 
 moment.locale('es');
 
@@ -33,12 +35,12 @@ const CalendarScreen = () => {
     const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month'); //Intento de mstrar lastView, pero si no funca q me muestre el mes
 
     const onDoubleClick = (e) => {
-        console.log("Abriendo modal")
         dispatch(uiOpenModal());
     }
 
     const onSelectEvent = (e) => {
-        console.log(e)
+        dispatch(eventSetActive(e));
+        dispatch(uiOpenModal());
     }
 
     const onViewChange = (e) => { // Esto lo voy a usar para que cada vez que actualice la pagina se me quede en donde la deje por ejemplo en semana o dia, se guarda en el localStorage
@@ -81,6 +83,8 @@ const CalendarScreen = () => {
                     event: CalendarEvent
                 }}
             />
+
+            <AddNewFab />
 
             <CalendarModal />
 

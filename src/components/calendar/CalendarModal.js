@@ -49,7 +49,6 @@ const CalendarModal = () => {
     };
 
     const closeModal = () => {
-        console.log('Cerrar modal')
         dispatch(uiCloseModal());
     };
 
