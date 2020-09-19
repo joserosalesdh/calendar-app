@@ -8,6 +8,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { messages } from '../../helpers/calendar-messages-es';
 import CalendarEvent from './CalendarEvent';
 import CalendarModal from './CalendarModal';
+import { useDispatch } from 'react-redux';
+import { uiOpenModal } from '../../actions/ui';
 
 moment.locale('es');
 
@@ -26,10 +28,13 @@ const events = [{
 
 const CalendarScreen = () => {
 
+    const dispatch = useDispatch();
+
     const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month'); //Intento de mstrar lastView, pero si no funca q me muestre el mes
 
     const onDoubleClick = (e) => {
-        console.log(e)
+        console.log("Abriendo modal")
+        dispatch(uiOpenModal());
     }
 
     const onSelectEvent = (e) => {
