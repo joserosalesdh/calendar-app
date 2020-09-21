@@ -8,29 +8,22 @@ import 'react-big-calendar/lib/css/react-big-calendar.css'
 import { messages } from '../../helpers/calendar-messages-es';
 import CalendarEvent from './CalendarEvent';
 import CalendarModal from './CalendarModal';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { uiOpenModal } from '../../actions/ui';
-import { eventSetActive } from '../../actions/events';
+import { eventClearActiveEvent, eventSetActive } from '../../actions/events';
 import AddNewFab from '../ui/AddNewFab';
+import DeleteEventFab from '../ui/DeleteEventFab';
 
 moment.locale('es');
 
 const localizer = momentLocalizer(moment);
 
-const events = [{
-    title: 'Cumpleaños del jefe',
-    start: moment().toDate(), //Sinonimo d ehacer un new Date(), pero en moment
-    end: moment().add(2, 'hour').toDate(),
-    bgcolor: '#fafafa',
-    user: {
-        _id: '123',
-        name: 'Jose'
-    }
-}]
 
 const CalendarScreen = () => {
 
     const dispatch = useDispatch();
+    // leer del store los evento... usar useSelector
+    const { events, activeEvent } = useSelector(state => state.calendar) // ya tengo todo lo que me regresa calentar
 
     const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'month'); //Intento de mstrar lastView, pero si no funca q me muestre el mes
 
@@ -40,12 +33,16 @@ const CalendarScreen = () => {
 
     const onSelectEvent = (e) => {
         dispatch(eventSetActive(e));
-        dispatch(uiOpenModal());
+
     }
 
     const onViewChange = (e) => { // Esto lo voy a usar para que cada vez que actualice la pagina se me quede en donde la deje por ejemplo en semana o dia, se guarda en el localStorage
         setLastView(e);
         localStorage.setItem('lastView', e);
+    }
+
+    const onSelectSlot = (e) => {
+        dispatch(eventClearActiveEvent());
     }
 
     const eventStyleGetter = (event, start, end, isSelected) => {
@@ -78,6 +75,8 @@ const CalendarScreen = () => {
                 onDoubleClickEvent={onDoubleClick}
                 onSelectEvent={onSelectEvent}
                 onView={onViewChange}
+                onSelectSlot={onSelectSlot}
+                selectable={true}
                 view={lastView}
                 components={{
                     event: CalendarEvent
@@ -85,6 +84,10 @@ const CalendarScreen = () => {
             />
 
             <AddNewFab />
+
+            {
+                (activeEvent) && <DeleteEventFab />
+            }
 
             <CalendarModal />
 
